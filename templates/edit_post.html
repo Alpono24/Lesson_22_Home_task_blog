@@ -6,9 +6,11 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Сохранить изменения</button>
+
+        <div class = 'pageEditPostButton'>
+            <div><button class="buttonSimpForm" type="submit">Сохранить изменения</button></div>
+            <div><a class="buttonSimp" href="{% url 'index' %}">На главную</a></div>
+        </div>
     </form>
 
-
-<p><a сlass="buttonFirst" href="{% url 'index' %}">На главную</a></p>
 {% endblock %}

@@ -5,7 +5,10 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Добавить статью</button>
+        <div class = 'pageAddPostButton'>
+            <div><button class="buttonSimpForm" type="submit">Добавить статью</button></div>
+            <div><a class="buttonSimp" href="{% url 'index' %}">На главную</a></div>
+        </div>
     </form>
-<p><a class="buttonFirst" href="{% url 'index' %}">На главную</a></p>
+
 {% endblock %}

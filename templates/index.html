@@ -7,12 +7,14 @@
     {% for post in posts %}
         <div class="post">
             <h2>{{post.title}}</h2>
-            <p>{{post.body}}</p>
-            <div class="author">Автор: {{post.author}}</div>
+            <div class="indexPostBody">{{post.body}}<div>
+<!--            <div><a class="indexArticle" href="{% url 'login' %}">{{post.body}}</a></div>-->
+            <div class="indexAuthor">Автор: {{post.author}}</div>
         </div>
         <div class="menu">
-            <p><a class="buttonFirst" href="{% url 'edit_post' post.id %}">Редактировать пост</a></p>
-            <p><a class="buttonFirst" href="{% url 'delete_post' post.id %}">Удалить пост</a></p>
+            <p><a class="buttonSimp" href="{% url 'post_detail' post.id %}">Подробнее</a></p>
+            <p><a class="buttonSimp" href="{% url 'edit_post' post.id %}">Редактировать пост</a></p>
+            <p><a class="buttonSimp" href="{% url 'delete_post' post.id %}">Удалить пост</a></p>
         </div>
     {% endfor %}
 

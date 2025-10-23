@@ -1,99 +1,49 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #f0f0f0;
-        }
-        .wrapper {
-        background-color: #f0f0f0;
-<!--        background-color: white;-->
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-         .menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        link a {
-            margin-right: 15px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        link a:hover {
-            text-decoration: underline;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-
-
-        a {
-          outline: none;
-          text-decoration: none;
-          width: 19.5%;
-          margin-right: 0.625%;
-          text-align: center;
-          line-height: 3;
-          color: black;
-          padding: 10px;
-        }
-
-        <!--a:link,-->
-        <!--a:visited,-->
-        <!--a:focus {-->
-        <!--  background: yellow;-->
-        <!--}-->
-
-        a:hover,
-        .buttonFirst{
-          background-color: #9d9d9d;
-          border-radius: 5px;
-          color: white;
-        }
-
-        a:active {
-          background: lightblue;
-          color: white;
-        }
-
-
-
-    </style>
+    <title>{% block title %}Мой Блог{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
 <header>
-    <div><strong><a href="{% url 'index' %}">Мой блог</a></strong></div>
-    <div class="menu">
-        <div><a href="{% url 'add_post' %}">Добавить статью</a></div>
-        <div><a href="{% url 'register' %}">Регистрация</a></div>
-        <div><a href="{% url 'login' %}">Войти</a></div>
+    <div><strong><a class="buttonSimp"href="{% url 'index' %}">Мой блог</a></strong></div>
+    <div class="baseMenu">
+        <div><a class="buttonSimpForm" href="{% url 'add_post' %}">Добавить статью</a></div>
+
+                    {% if user.is_authenticated %}
+                        <div>Привет, {{ user.username }}!</div>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button class="buttonSimpForm" type="submit">Выйти</button>
+                                </form>
+                        {% else %}
+                            <div><a class="buttonSimp" href="{% url 'login' %}">Войти</a></div>
+                            <div><a class="buttonSimp" href="{% url 'register' %}">Регистрация</a></div>
+
+                    {% endif %}
+
     </div>
 </header>
 
+
+<main>
 
 <div class="wrapper">
     {% block content %}
     <!-- Здесь дочерние шаблоны вставят свой HTML -->
     {% endblock %}
 </div>
+
+</main>
+
+<footer class=footer>
+    <div class="footerText">
+        <small>2025 Учебный проект Django Blog: Alpono24</small>
+    </div>
+</footer>
 
 </body>
 </html>
