@@ -1,0 +1,21 @@
+asgiref==3.10.0
+dj-config-url==0.1.1
+Django==5.2.7
+django-environ==0.12.0
+django-seed==0.3.1
+Faker==37.11.0
+pillow==12.0.0
+psycopg2-binary==2.9.11  # драйвер для работы с PostgreSQL
+sqlparse==0.5.3
+toposort==1.10
+tzdata==2025.2
+
+
+# whitenoise==6.2.*  # пакет для работы со статическими файлами
+# gunicorn==20.1.*  # сервер для обработки HTTP-запросов
+# django==4.2.*
+# psycopg2-binary==2.9.*  # драйвер для работы с PostgreSQL
+# dj-database-url==0.5.*  # для чтения URL базы данных
+# pytz==2023.*  # поддержка временных зон
+
+

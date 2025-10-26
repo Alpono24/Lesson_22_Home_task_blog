@@ -134,8 +134,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static",]
 
+
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
 # Default primary key field type
 
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -148,5 +155,31 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 
+
+#Настройка зоны Минск
+TIME_ZONE = 'Europe/Minsk'
+USE_TZ = True
+
+#Настройка кэша
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+#Настройка почтового клиента (Django settings):
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.ru'                 # SMTP-сервер Mail.Ru
+# EMAIL_HOST = 'smtp.gmail.com' # Сервер SMTP Google Mail
+EMAIL_PORT = 465                  # Порт для SSL/TLS соединения 587 465
+# EMAIL_USE_TLS = True                   # Использовать TLS шифрование
+EMAIL_USE_SSL = True #для SSL
+
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Адрес отправителя по умолчанию
+SERVER_EMAIL = EMAIL_HOST_USER        # Адрес для служебных сообщений
 
 

@@ -3,13 +3,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Мой Блог{% endblock %}</title>
+    <title>{% block title %}Блог{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
 <header>
-    <div><strong><a class="buttonSimp"href="{% url 'index' %}">Мой блог</a></strong></div>
+    <div><strong><a class="buttonSimp"href="{% url 'index' %}">Блог</a></strong></div>
     <div class="baseMenu">
         <div><a class="buttonSimpForm" href="{% url 'add_post' %}">Добавить статью</a></div>
 

@@ -1,5 +1,10 @@
+from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
+
+from myproject import settings
+from .models import Post, Category
 from .forms import PostForm
 
 
@@ -11,44 +16,29 @@ from django.contrib.auth.decorators import login_required
 
 def index(request):
     title = 'Статьи'
-    posts = Post.objects.all()
-    context = {'title': title, 'posts': posts}
+    categories = Category.objects.all()
+    category_id = request.GET.get('category')
+    posts = Post.objects.all().order_by(('-created_at'))
+    if category_id:
+        posts = posts.filter(category_id=category_id)
+
+    context = {'title': title, 'categories': categories, 'posts': posts}
     return render(request,'index.html', context)
 
 
-#
-# def post_detail(request, pk):
-#     post = get_object_or_404(request, pk=pk)
-#     return render(request, 'post_detail.html', {'post': post})
 
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     return render(request, 'post_detail.html', {'post': post})
 
 
-# @login_required(login_url='/login/')
-# def add_post(request):
-#     title = 'Добавить статью'
-#     if request.method == 'POST':
-#         form = PostForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('index')
-#     else:
-#         form = PostForm()
-#
-#     posts = Post.objects.all()
-#     context = {'title': title,'articles': posts, 'form': form}
-#     return render(request, 'add_post.html', context)
-
-
 @login_required(login_url='/login/')
 def add_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user  # устанавливаем текущего пользователя как автора
+            post.author = request.user
             post.save()
             return redirect('index')
     else:
@@ -56,33 +46,24 @@ def add_post(request):
     return render(request, 'add_post.html', {'form': form})
 
 
+
 @login_required(login_url='/login/')
 def edit_post(request, id):
-    title = 'Редактирование поста'
     post = get_object_or_404(Post, id=id)
+    if post.author != request.user and not request.user.is_superuser:
+        return render(request, 'action_prohibited.html')
+
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
+
         if form.is_valid():
             form.save()
-            return redirect('index')  #
+            return redirect('index')
     else:
         form = PostForm(instance=post)
     return render(request, 'edit_post.html', {'form': form, 'post': post})
 
-# @login_required(login_url='/login/')
-# def edit_post(request, id):
-#     title = 'Редактирование поста'
-#     post = get_object_or_404(Post, id=id)
-#     if request.method == 'POST':
-#         form = PostForm(request.POST, instance=post)
-#         if form.is_valid():
-#             post = form.save(commit=False)
-#             post.author = request.user  # устанавливаем текущего пользователя как автора
-#             post.save()
-#             return redirect('index')  #
-#     else:
-#         form = PostForm(instance=post)
-#     return render(request, 'edit_post.html', {'form': form, 'post': post})
+
 
 
 @login_required(login_url='/login/')
@@ -99,7 +80,7 @@ def delete_post(request, id):
 
 
 
-#Представление для регистрации в блоге
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -113,3 +94,45 @@ def register_view(request):
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
+#
+# def send_email(request):
+#     if request.method == 'POST':
+#         subject = 'Приветствие от нашего сервиса!'  # Тема письма
+#         message = f'Пользователь {request.user} хочет приобрести услугу' # Сообщение
+#         recipient_list = ['alex.ponomarov@mail.ru']  # Получатель
+#
+#         try:
+#             send_mail(
+#                 subject=subject,
+#                 message=message,
+#                 from_email=settings.EMAIL_HOST_USER,
+#                 recipient_list=recipient_list,
+#                 fail_silently=False
+#             )
+#             return render(request, 'email_sent_successfully.html')  # Рендер страницы успеха
+#         except Exception as e:
+#             return render(request, 'email_error.html', {'error_message': str(e)})  # Рендер страницы ошибки
+#     else:
+#         return render(request, 'send_email.html')  # Страница отправки письма
+
+
+def send_email(request):
+    if request.method == 'POST':
+        subject = request.POST.get('subject')  # Получаем тему письма из формы
+        message = request.POST.get('message')  # Получаем тело письма из формы
+        recipient_list = ['alex.ponomarov@mail.ru']
+
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=recipient_list,
+                fail_silently=False
+            )
+            return render(request, 'email_sent_successfully.html')
+        except Exception as e:
+            return render(request, 'email_error.html', {'error_message': str(e)})
+    else:
+        return render(request, 'send_email.html')
